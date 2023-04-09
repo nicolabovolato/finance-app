@@ -6,7 +6,9 @@ jobs:
   web-lint:
     name: Web lint
     runs-on: ubuntu-latest
-    working-directory: web
+    defaults:
+      run:
+        working-directory: web
 
     steps:
       - uses: actions/checkout@v2
@@ -16,7 +18,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "18"
-          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
       - run: pnpm lint
@@ -24,7 +25,9 @@ jobs:
   api-tests:
     name: API Tests
     runs-on: ubuntu-latest
-    working-directory: api
+    defaults:
+      run:
+        working-directory: api
 
     services:
       postgres:
@@ -52,7 +55,7 @@ jobs:
           components: llvm-tools-preview
       - uses: duskmoon314/action-load-env@v1.1.0
         with:
-          files: .env.test
+          files: ./api/.env.test
       - run: cargo install grcov sqlx-cli
       - run: sqlx migrate run
       - run: RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test

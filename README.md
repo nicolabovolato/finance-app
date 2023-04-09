@@ -2,6 +2,11 @@
 
 A simple finance app built with with SvelteKit and Rust.
 
+<div style="display:flex">
+    <img width="49.5%" src="img-overview.png" />
+    <img width="49.5%" src="img-business-account.png" />
+</div>
+
 ### Run the app
 
 - `docker compose up -d`

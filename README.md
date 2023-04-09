@@ -1,6 +1,7 @@
 # Personal finance app
 
-[![CI](https://github.com/nicola-bovolato/finance-app/actions/workflows/main.yaml/badge.svg)](https://github.com/nicola-bovolato/finance-app/actions/workflows/main.yaml)
+[![Api CI](https://github.com/nicola-bovolato/finance-app/actions/workflows/api.yaml/badge.svg)](https://github.com/nicola-bovolato/finance-app/actions/workflows/api.yaml)
+[![Web CI](https://github.com/nicola-bovolato/finance-app/actions/workflows/web.yaml/badge.svg)](https://github.com/nicola-bovolato/finance-app/actions/workflows/web.yaml)
 
 A simple finance app built with with SvelteKit and Rust.
 

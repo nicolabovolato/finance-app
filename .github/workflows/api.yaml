@@ -1,29 +1,10 @@
 on: [push]
 
-name: main
+name: Api CI
 
 jobs:
-  web-lint:
-    name: Web lint
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm check
-      - run: pnpm lint
-
-  api-tests:
-    name: API Tests
+  tests:
+    name: Tests
     runs-on: ubuntu-latest
     defaults:
       run:

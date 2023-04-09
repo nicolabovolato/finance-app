@@ -1,0 +1,23 @@
+on: [push]
+
+name: Web CI
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm lint

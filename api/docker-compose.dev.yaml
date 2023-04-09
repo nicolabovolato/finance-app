@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+  
+  smtp:
+    image: dockage/mailcatcher:0.8.2
+    ports:
+      - 1025:1025
+      - 1080:1080
+
+volumes:
+  db:
+    driver: local

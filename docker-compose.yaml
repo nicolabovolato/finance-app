@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7-alpine
+
+  smtp:
+    image: dockage/mailcatcher:0.8.2
+    ports:
+      - 1080:1080
+
+  api:
+    build:
+      context: ./api
+      args:
+        PROJECT_NAME: finance_api
+    environment:
+      PASETO_PUBLIC_KEY: |
+        -----BEGIN PUBLIC KEY-----
+        MCowBQYDK2VwAyEARCsnT9JAkaWG+6BlBeJTKUmZY+xmn+xdwINSS4dhVHM=
+        -----END PUBLIC KEY-----
+      PASETO_PRIVATE_KEY: |
+        -----BEGIN PRIVATE KEY-----
+        MC4CAQAwBQYDK2VwBCIEIGgU582FmEz0i76AVAKH3NRcT+3fZu/SSXdhoFdzWfuH
+        -----END PRIVATE KEY-----
+      PASETO_EXPIRATION_MINUTES: 1440
+      CORS_ORIGINS: "*"
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+      CACHE_URL: redis://cache:6379/0
+      SMTP_HOST: smtp
+      SMTP_PORT: 1025
+      SMTP_SECURE: false
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+      - cache
+      - smtp
+
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_API_URL: http://localhost:8080/api/v1
+    ports:
+      - 80:80
+    depends_on:
+      - api
+
+volumes:
+  db:
+    driver: local

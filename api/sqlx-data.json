@@ -1,0 +1,592 @@
+{
+  "db": "PostgreSQL",
+  "16b93b71e92514b42b39f85897f90dbf4158d3729d2f0bab9659e82d5029ef85": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "balance",
+          "ordinal": 3,
+          "type_info": "Numeric"
+        },
+        {
+          "name": "currency: _",
+          "ordinal": 4,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "DELETE FROM accounts WHERE id=$1 RETURNING id, user_id, name, balance, currency as \"currency: _\""
+  },
+  "1a142740d17fe2edf8ef291bd92ffd99c0815d9a13b7439e3dea5e131ceb9c9e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Numeric"
+        ]
+      }
+    },
+    "query": "UPDATE accounts SET balance = balance + $2 WHERE id = $1"
+  },
+  "26e7e05427bc7dabcd7815d27764fda2baf4cfe60a2d2d6ee2a1f773dccbbce2": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "email",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT * FROM users"
+  },
+  "3248b9ebecf448363828d78d7958a10d2e4a1a0288afa0ff9b87b2eb5209ed70": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "balance",
+          "ordinal": 3,
+          "type_info": "Numeric"
+        },
+        {
+          "name": "currency: _",
+          "ordinal": 4,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid",
+          "Varchar",
+          "Numeric",
+          "Varchar"
+        ]
+      }
+    },
+    "query": "UPDATE accounts\n            SET user_id=$2, name=$3, balance=$4, currency=$5\n            WHERE id=$1\n            RETURNING id, user_id, name, balance, currency as \"currency: _\""
+  },
+  "34166c6d4febb980c1c710a0bb005cf89acea22ddee313e8c7fb09476e1d8443": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "email",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "DELETE FROM users WHERE id=$1 RETURNING *"
+  },
+  "3f8935110bea87e2a11c73b58932e454af63d9bc75f4d2e819e52f9ae3c3420e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "account_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "timestamp",
+          "ordinal": 2,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "title",
+          "ordinal": 3,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "amount",
+          "ordinal": 4,
+          "type_info": "Numeric"
+        },
+        {
+          "name": "category: _",
+          "ordinal": 5,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid",
+          "Timestamptz",
+          "Varchar",
+          "Numeric",
+          "Varchar"
+        ]
+      }
+    },
+    "query": "INSERT INTO movements(id, account_id, timestamp, title, amount, category) \n            VALUES ($1, $2, $3, $4, $5, $6)\n            RETURNING id, account_id, timestamp, title, amount, category as \"category: _\""
+  },
+  "4b84aeca99d86f0b870941550bf593e066c91bfb51589ba692706c44b4b6ac42": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "balance",
+          "ordinal": 3,
+          "type_info": "Numeric"
+        },
+        {
+          "name": "currency: _",
+          "ordinal": 4,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "SELECT id, user_id, name, balance, currency as \"currency: _\" FROM accounts WHERE user_id = $1 ORDER BY name DESC"
+  },
+  "5151300c820de444437b2be3064174583fc783079e382c123aca9a4e731ad139": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "account_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "timestamp",
+          "ordinal": 2,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "title",
+          "ordinal": 3,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "amount",
+          "ordinal": 4,
+          "type_info": "Numeric"
+        },
+        {
+          "name": "category: _",
+          "ordinal": 5,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "SELECT id, account_id, timestamp, title, amount, category as \"category: _\" \n            FROM movements\n            WHERE account_id = $1\n            ORDER BY timestamp DESC"
+  },
+  "5be51a853e8e2b751b1af78eeb13b3548847fa464c56d812c509ddbc5b93f0b1": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "balance",
+          "ordinal": 3,
+          "type_info": "Numeric"
+        },
+        {
+          "name": "currency: _",
+          "ordinal": 4,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "SELECT id, user_id, name, balance, currency as \"currency: _\" FROM accounts WHERE id = $1"
+  },
+  "843923b9a0257cf80f1dff554e7dc8fdfc05f489328e8376513124dfb42996e3": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "email",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "SELECT * FROM users WHERE id = $1"
+  },
+  "90e0d055a6e6d6aacf54b48210e0f9f5677c4c77fdc5be3b671fad2f58489271": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "email",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Varchar"
+        ]
+      }
+    },
+    "query": "UPDATE users\n            SET email=$2\n            WHERE id=$1\n            RETURNING *"
+  },
+  "a16d1c6e5af38543c25f2c97a18fc519fb169b894d752a45fd3bf3cf7aed3f87": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "balance",
+          "ordinal": 3,
+          "type_info": "Numeric"
+        },
+        {
+          "name": "currency: _",
+          "ordinal": 4,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid",
+          "Varchar",
+          "Numeric",
+          "Varchar"
+        ]
+      }
+    },
+    "query": "INSERT INTO accounts(id, user_id, name, balance, currency)\n            VALUES($1, $2, $3, $4, $5)\n            RETURNING id, user_id, name, balance, currency as \"currency: _\""
+  },
+  "bb01b88c2593fbedccdf84a76ac766ab22771df949dabf43a1cb28ecaa2d79ef": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "balance",
+          "ordinal": 3,
+          "type_info": "Numeric"
+        },
+        {
+          "name": "currency: _",
+          "ordinal": 4,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT id, user_id, name, balance, currency as \"currency: _\" FROM accounts ORDER BY name ASC"
+  },
+  "ca756c52d84654224af8814f18b2d9abdc285ef7ba829db4e789e0fe70c502f1": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "email",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Varchar"
+        ]
+      }
+    },
+    "query": "INSERT INTO users(id, email)\n            VALUES($1, $2)\n            RETURNING *"
+  },
+  "da61265d713cb562a08fab65f2c3cc908b40280d0db2a7d4c13abad11ec99b50": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "balance",
+          "ordinal": 3,
+          "type_info": "Numeric"
+        },
+        {
+          "name": "currency: _",
+          "ordinal": 4,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "SELECT id, user_id, name, balance, currency as \"currency: _\" FROM accounts WHERE id = $1 AND user_id = $2"
+  },
+  "f3f58600e971f1be6cbe206bba24f77769f54c6230e28f5b3dc719b869d9cb3f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "email",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT * FROM users WHERE email = $1"
+  }
+}

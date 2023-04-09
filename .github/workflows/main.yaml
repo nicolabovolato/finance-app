@@ -1,0 +1,59 @@
+on: [push]
+
+name: main
+
+jobs:
+  web-lint:
+    name: Web lint
+    runs-on: ubuntu-latest
+    working-directory: web
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm lint
+
+  api-tests:
+    name: API Tests
+    runs-on: ubuntu-latest
+    working-directory: api
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+      smtp:
+        image: dockage/mailcatcher:0.8.2
+        ports:
+          - 1025:1025
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: llvm-tools-preview
+      - uses: duskmoon314/action-load-env@v1.1.0
+        with:
+          files: .env.test
+      - run: cargo install grcov sqlx-cli
+      - run: sqlx migrate run
+      - run: RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test
+      - run: grcov . -s . --binary-path ./target/debug/ -t markdown --branch --ignore-not-existing --ignore '../*' --ignore "/*"

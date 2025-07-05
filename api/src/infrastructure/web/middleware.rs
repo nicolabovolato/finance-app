@@ -1,9 +1,11 @@
-use async_trait::async_trait;
 use axum::{
-    extract::{rejection::JsonRejection, FromRef, FromRequest, FromRequestParts, Json},
-    headers::{authorization::Bearer, Authorization},
-    http::{request::Parts, Request},
-    RequestPartsExt, TypedHeader,
+    RequestPartsExt,
+    extract::{FromRef, FromRequest, FromRequestParts, Json, rejection::JsonRejection},
+    http::{Request, request::Parts},
+};
+use axum_extra::{
+    TypedHeader,
+    headers::{Authorization, authorization::Bearer},
 };
 use serde::de::DeserializeOwned;
 use validator::Validate;
@@ -14,24 +16,24 @@ use crate::{domain::entities::auth::Claims, domain::error::Error};
 #[derive(Debug, Clone, Copy, Default)]
 pub struct ValidatedJson<T>(pub T);
 
-#[async_trait]
-impl<T, S, B> FromRequest<S, B> for ValidatedJson<T>
+impl<T, S> FromRequest<S> for ValidatedJson<T>
 where
     T: DeserializeOwned + Validate,
     S: Send + Sync,
-    Json<T>: FromRequest<S, B, Rejection = JsonRejection>,
-    B: Send + 'static,
+    Json<T>: FromRequest<S, Rejection = JsonRejection>,
 {
     type Rejection = Error;
 
-    async fn from_request(req: Request<B>, state: &S) -> Result<Self, Self::Rejection> {
+    async fn from_request(
+        req: Request<axum::body::Body>,
+        state: &S,
+    ) -> Result<Self, Self::Rejection> {
         let Json(value) = Json::<T>::from_request(req, state).await?;
         value.validate()?;
         Ok(ValidatedJson(value))
     }
 }
 
-#[async_trait]
 impl<S> FromRequestParts<S> for Claims
 where
     State: FromRef<S>,

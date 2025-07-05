@@ -1,7 +1,7 @@
-use axum::http::{header, HeaderValue, Method};
-use bb8_redis::{bb8::Pool, RedisConnectionManager};
+use axum::http::{HeaderValue, Method, header};
+use bb8_redis::{RedisConnectionManager, bb8::Pool};
 use ed25519::pkcs8::{self, DecodePrivateKey, DecodePublicKey};
-use lettre::{transport::smtp::authentication::Credentials, AsyncSmtpTransport, Tokio1Executor};
+use lettre::{AsyncSmtpTransport, Tokio1Executor, transport::smtp::authentication::Credentials};
 use serde::Deserialize;
 use sqlx::PgPool;
 use tower_http::cors::CorsLayer;

@@ -2,10 +2,11 @@ use std::collections::HashMap;
 
 use axum::{
     Json,
-    extract::rejection::{JsonRejection, TypedHeaderRejection},
+    extract::rejection::JsonRejection,
     http::StatusCode,
     response::{IntoResponse, Response},
 };
+use axum_extra::typed_header::TypedHeaderRejection;
 use serde_json::json;
 
 use crate::domain::error::{AuthErrorType, Error, RepositoryErrorType};
@@ -44,7 +45,7 @@ impl IntoResponse for Error {
             }
             Error::Validation(ref err) => match err.downcast_ref::<validator::ValidationErrors>() {
                 Some(err) => {
-                    let errors: HashMap<&str, String> = err
+                    let errors: HashMap<_, _> = err
                         .field_errors()
                         .into_iter()
                         .map(|(field, err)| {
@@ -52,7 +53,7 @@ impl IntoResponse for Error {
                                 field,
                                 err.iter()
                                     .map(|err| err.to_string().replace('\n', ","))
-                                    .collect(),
+                                    .collect::<Vec<_>>(),
                             )
                         })
                         .collect();

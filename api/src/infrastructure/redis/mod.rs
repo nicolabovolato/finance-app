@@ -22,9 +22,9 @@ impl RedisOtpService {
 #[async_trait]
 impl OtpService for RedisOtpService {
     async fn generate_otp_for(&self, key: &str) -> Result<String> {
-        let otp = format!("{:06}", rand::thread_rng().gen_range(0..700_000));
-        let otp = &self.set(key, otp, Some(Duration::minutes(10))).await?;
-        Ok(otp.to_string())
+        let otp = format!("{:06}", rand::rng().random_range(0..700_000));
+        let otp = self.set(key, otp, Some(Duration::minutes(10))).await?;
+        Ok(otp)
     }
 
     async fn validate(&self, key: &str, otp: &str) -> Result<()> {
@@ -52,7 +52,7 @@ impl KVStore<String> for RedisOtpService {
         let mut conn = self.pool.get().await?;
         match expiration {
             Some(expiration) => {
-                conn.set_ex::<_, _, ()>(key, &value, expiration.num_seconds() as usize)
+                conn.set_ex::<_, _, ()>(key, &value, expiration.num_seconds() as u64)
                     .await?
             }
             None => conn.set::<_, _, ()>(key, &value).await?,
@@ -65,7 +65,6 @@ impl KVStore<String> for RedisOtpService {
 mod integration_tests {
     use super::*;
 
-    
     use tokio::time::sleep;
     use uuid::Uuid;
 

@@ -1,10 +1,10 @@
-use axum::{extract::State, http::StatusCode, response::IntoResponse, routing::post, Json, Router};
+use axum::{Json, Router, extract::State, http::StatusCode, response::IntoResponse, routing::post};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::domain::error::Error;
-use crate::infrastructure::web::middleware::ValidatedJson;
 use crate::infrastructure::web::State as AppState;
+use crate::infrastructure::web::middleware::ValidatedJson;
 
 #[derive(Deserialize, Validate)]
 struct OtpBody {
@@ -61,12 +61,12 @@ pub fn router() -> Router<AppState> {
 mod tests {
     use axum::response::IntoResponse;
     use mockall::predicate;
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use super::*;
     use crate::{
-        application::use_cases::auth::MockAuthUseCase,
-        application::use_cases::profile::MockProfileUseCase, infrastructure::web::get_mock_state,
+        application::use_cases::{auth::MockAuthUseCase, profile::MockProfileUseCase},
+        infrastructure::web::{get_mock_state, routes::extract_body_response},
     };
 
     #[tokio::test]
@@ -120,10 +120,9 @@ mod tests {
         assert_eq!(response.status(), axum::http::StatusCode::CREATED);
 
         assert_eq!(
-            serde_json::from_slice::<Value>(
-                &hyper::body::to_bytes(response.into_body()).await.unwrap()
-            )
-            .unwrap(),
+            extract_body_response::<Value>(response.into_body())
+                .await
+                .unwrap(),
             json! ({
                 "access_token": token.to_string()
             })

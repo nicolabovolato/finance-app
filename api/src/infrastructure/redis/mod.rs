@@ -65,7 +65,7 @@ impl KVStore<String> for RedisOtpService {
 mod integration_tests {
     use super::*;
 
-    use once_cell::sync::Lazy;
+    
     use tokio::time::sleep;
     use uuid::Uuid;
 

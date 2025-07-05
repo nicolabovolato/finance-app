@@ -28,7 +28,9 @@ Run `sqlx` for additional commands
 ## View test coverage
 
 - Follow steps for [develop locally](#develop-locally)
-- Install grcov `cargo install grcov`
-- Run `RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test`
+- Install grcov and llvm-tools 
+    - `cargo install grcov`
+    - `rustup component add llvm-tools`
+- Run `RUSTFLAGS='-C instrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test`
 - Run `grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o ./target/debug/coverage/`
 - View [coverage](./target/debug/coverage/index.html) in your browser

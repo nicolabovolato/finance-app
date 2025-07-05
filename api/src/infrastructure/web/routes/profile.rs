@@ -1,17 +1,17 @@
 use axum::{
+    Json, Router,
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
     routing::{get, post},
-    Json, Router,
 };
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use validator::Validate;
 
-use crate::infrastructure::web::middleware::ValidatedJson;
 use crate::infrastructure::web::State as AppState;
+use crate::infrastructure::web::middleware::ValidatedJson;
 use crate::{
     domain::entities::{
         accounts::{Account, CategoryType, CurrencyType},
@@ -104,9 +104,9 @@ pub fn router() -> Router<AppState> {
     Router::new()
         .route("/", get(get_profile))
         .route("/accounts", post(post_account))
-        .route("/accounts/:account_id", get(get_account))
-        .route("/accounts/:account_id/movements", get(get_movements))
-        .route("/accounts/:account_id/movements", post(post_movement))
+        .route("/accounts/{account_id}", get(get_account))
+        .route("/accounts/{account_id}/movements", get(get_movements))
+        .route("/accounts/{account_id}/movements", post(post_movement))
 }
 
 #[cfg(test)]
@@ -114,15 +114,16 @@ mod tests {
     use axum::response::IntoResponse;
     use mockall::predicate;
     use rust_decimal::Decimal;
-    use serde_json::{json, Value};
+    use serde_json::{Value, json};
 
     use super::*;
     use crate::{
-        application::use_cases::auth::MockAuthUseCase,
-        application::use_cases::profile::MockProfileUseCase,
-        domain::entities::accounts::{Account, Movement},
-        domain::entities::auth::Claims,
-        infrastructure::web::get_mock_state,
+        application::use_cases::{auth::MockAuthUseCase, profile::MockProfileUseCase},
+        domain::entities::{
+            accounts::{Account, Movement},
+            auth::Claims,
+        },
+        infrastructure::web::{get_mock_state, routes::extract_body_response},
     };
 
     #[tokio::test]
@@ -152,10 +153,9 @@ mod tests {
 
         assert_eq!(response.status(), axum::http::StatusCode::OK);
         assert_eq!(
-            serde_json::from_slice::<Value>(
-                &hyper::body::to_bytes(response.into_body()).await.unwrap()
-            )
-            .unwrap(),
+            extract_body_response::<Value>(response.into_body())
+                .await
+                .unwrap(),
             json!({ "accounts": accounts2 })
         );
     }
@@ -197,10 +197,9 @@ mod tests {
 
         assert_eq!(response.status(), axum::http::StatusCode::CREATED);
 
-        let body = serde_json::from_slice::<Account>(
-            &hyper::body::to_bytes(response.into_body()).await.unwrap(),
-        )
-        .unwrap();
+        let body = extract_body_response::<Account>(response.into_body())
+            .await
+            .unwrap();
 
         assert_eq!(body, account2);
     }
@@ -237,10 +236,9 @@ mod tests {
 
         assert_eq!(response.status(), axum::http::StatusCode::OK);
 
-        let body = serde_json::from_slice::<Account>(
-            &hyper::body::to_bytes(response.into_body()).await.unwrap(),
-        )
-        .unwrap();
+        let body = extract_body_response::<Account>(response.into_body())
+            .await
+            .unwrap();
 
         assert_eq!(body, account2);
     }
@@ -293,10 +291,9 @@ mod tests {
 
         assert_eq!(response.status(), axum::http::StatusCode::CREATED);
 
-        let body = serde_json::from_slice::<Movement>(
-            &hyper::body::to_bytes(response.into_body()).await.unwrap(),
-        )
-        .unwrap();
+        let body = extract_body_response::<Movement>(response.into_body())
+            .await
+            .unwrap();
 
         assert_eq!(body, movement2);
     }
@@ -334,10 +331,9 @@ mod tests {
 
         assert_eq!(response.status(), axum::http::StatusCode::OK);
 
-        let body = serde_json::from_slice::<Vec<Movement>>(
-            &hyper::body::to_bytes(response.into_body()).await.unwrap(),
-        )
-        .unwrap();
+        let body = extract_body_response::<Vec<Movement>>(response.into_body())
+            .await
+            .unwrap();
 
         assert_eq!(body, movements2);
     }

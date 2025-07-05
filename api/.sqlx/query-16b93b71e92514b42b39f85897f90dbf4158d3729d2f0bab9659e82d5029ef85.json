@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM accounts WHERE id=$1 RETURNING id, user_id, name, balance, currency as \"currency: _\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "balance",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 4,
+        "name": "currency: _",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "16b93b71e92514b42b39f85897f90dbf4158d3729d2f0bab9659e82d5029ef85"
+}

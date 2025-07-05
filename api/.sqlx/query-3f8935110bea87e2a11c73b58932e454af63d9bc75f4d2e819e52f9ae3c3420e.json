@@ -1,0 +1,57 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO movements(id, account_id, timestamp, title, amount, category) \n            VALUES ($1, $2, $3, $4, $5, $6)\n            RETURNING id, account_id, timestamp, title, amount, category as \"category: _\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "account_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "amount",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 5,
+        "name": "category: _",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Timestamptz",
+        "Varchar",
+        "Numeric",
+        "Varchar"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "3f8935110bea87e2a11c73b58932e454af63d9bc75f4d2e819e52f9ae3c3420e"
+}

@@ -54,14 +54,14 @@ mod integration_tests {
     }
 
     #[tokio::test]
-    #[should_panic(expected = "Missing domain or user")]
+    #[should_panic(expected = "Invalid input")]
     async fn send_email_error_missing_address() {
         let service = SmtpMailService::new(CLIENT.to_owned());
         service.send_email("", "", "").await.unwrap();
     }
 
     #[tokio::test]
-    #[should_panic(expected = "Invalid email user")]
+    #[should_panic(expected = "Invalid input")]
     async fn send_email_error_invalid_address() {
         let service = SmtpMailService::new(CLIENT.to_owned());
         service.send_email("whatever 123@", "", "").await.unwrap();

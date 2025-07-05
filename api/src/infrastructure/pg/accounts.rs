@@ -2,8 +2,8 @@ use async_trait::async_trait;
 use sqlx::postgres::PgPool;
 use uuid::{self, Uuid};
 
-use crate::application::services::accounts::AccountService;
 use crate::application::services::Repository;
+use crate::application::services::accounts::AccountService;
 use crate::domain::entities::accounts::{Account, Movement};
 use crate::domain::error::Result;
 
@@ -70,7 +70,7 @@ impl AccountService for PgAccountService {
             movement.amount,
             movement.category as _
         )
-        .fetch_one(&mut tx)
+        .fetch_one(&mut *tx)
         .await?;
 
         sqlx::query!(
@@ -78,7 +78,7 @@ impl AccountService for PgAccountService {
             movement.account_id,
             movement.amount
         )
-        .execute(&mut tx)
+        .execute(&mut *tx)
         .await?;
 
         tx.commit().await?;

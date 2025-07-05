@@ -1,5 +1,5 @@
 use axum::Router;
-use std::{future::Future, net::SocketAddr, sync::Arc};
+use std::{future::Future, sync::Arc};
 use tower_http::trace;
 
 use crate::{
@@ -23,11 +23,11 @@ impl State {
     }
 }
 
-pub async fn run(config: Config, state: State, shutdown_signal: impl Future<Output = ()>) {
-    let addr = format!("0.0.0.0:{0}", config.port)
-        .parse::<SocketAddr>()
-        .expect("Invalid port");
-
+pub async fn run(
+    config: Config,
+    state: State,
+    shutdown_signal: impl Future<Output = ()> + Send + 'static,
+) {
     let app = Router::new()
         .nest("/api/v1/auth", routes::auth::router())
         .nest("/api/v1/profile", routes::profile::router())
@@ -41,10 +41,13 @@ pub async fn run(config: Config, state: State, shutdown_signal: impl Future<Outp
                 .on_failure(trace::DefaultOnFailure::new().level(tracing::Level::ERROR)),
         );
 
-    tracing::info!("Listening on http://{addr}");
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{0}", config.port))
+        .await
+        .expect("Invalid port");
 
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+    tracing::info!("Listening on http://{}", listener.local_addr().unwrap());
+
+    axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal)
         .await
         .unwrap();

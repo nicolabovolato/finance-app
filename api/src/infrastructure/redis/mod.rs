@@ -1,10 +1,10 @@
 use async_trait::async_trait;
-use bb8_redis::{bb8::Pool, redis::AsyncCommands, RedisConnectionManager};
+use bb8_redis::{RedisConnectionManager, bb8::Pool, redis::AsyncCommands};
 use chrono::Duration;
 use rand::{self, Rng};
 
-use crate::application::services::otp::OtpService;
 use crate::application::services::KVStore;
+use crate::application::services::otp::OtpService;
 use crate::domain::error::{AuthErrorType, Error, Result};
 
 mod error;
@@ -52,10 +52,10 @@ impl KVStore<String> for RedisOtpService {
         let mut conn = self.pool.get().await?;
         match expiration {
             Some(expiration) => {
-                conn.set_ex(key, &value, expiration.num_seconds() as usize)
+                conn.set_ex::<_, _, ()>(key, &value, expiration.num_seconds() as usize)
                     .await?
             }
-            None => conn.set(key, &value).await?,
+            None => conn.set::<_, _, ()>(key, &value).await?,
         };
         Ok(value)
     }

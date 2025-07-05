@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
 use axum::{
+    Json,
     extract::rejection::{JsonRejection, TypedHeaderRejection},
     http::StatusCode,
     response::{IntoResponse, Response},
-    Json,
 };
 use serde_json::json;
 
@@ -69,7 +69,7 @@ impl IntoResponse for Error {
             Error::Repository(RepositoryErrorType::NotFound) => StatusCode::NOT_FOUND,
             Error::Repository(RepositoryErrorType::Conflict) => StatusCode::CONFLICT,
             Error::Auth(_) => StatusCode::UNAUTHORIZED,
-            Error::Validation(err) if matches!(err.downcast_ref::<JsonRejection>(), Some(_)) => {
+            Error::Validation(err) if err.downcast_ref::<JsonRejection>().is_some() => {
                 StatusCode::BAD_REQUEST
             }
             Error::Validation(_) => StatusCode::UNPROCESSABLE_ENTITY,
